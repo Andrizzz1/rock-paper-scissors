@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" type="logo" href="gaming.png">
+    <title>Game</title>
+
+
+    <style>
+        .midd{
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            
+            
+            position: relative;
+            gap: 10px;
+          
+            
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+            }
+
+    
+        
+        button{
+            height: 50px;
+            width: 100px;
+            border-radius: 10px;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+             z-index: 1;
+             transition: color 0.2s ease, box-shadow 0.2s ease;
+             background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+          
+            
+        
+           
+        }
+        button:hover{
+            cursor:pointer;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+            flex-wrap: nowrap;
+            color: white;
+            transition: 100ms;
+        }
+
+        
+ 
+          
+        
+        button:after{
+            content: '';    
+            position: absolute;
+            width: 0;
+            height: 2.5px;
+            background: linear-gradient(to right,red,blue);
+            left: 0;
+            margin-left: 2px;
+            bottom: 0;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 100px;
+            transition: width 0.3s ease;
+            
+          
+        }
+
+        button:hover::after{
+            width: 95px;
+            transition: width 0.3s ease;
+        }
+
+        .buttons{
+            padding-top: 100px;
+        }
+
+        #head{
+            display: block;
+            position:absolute;
+            top: 100px;
+            background: transparent;
+
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 100px;
+            transition: transform 0.3s ease;
+            
+        }
+
+        #head:hover{
+            scale: 10px;
+            transform: scale(1.1);
+        }
+
+       
+       
+        @media screen and (max-width: 900px) {
+        #head{
+            font-size: 40px;
+        }
+        }
+        
+        #reset_but > a{
+            text-decoration:none;
+            color: black;
+        }
+        #reset_but a:hover{
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .buttons{
+            margin-top: 100px;
+        }
+
+      
+
+     
+
+    </style>
+    
+</head>
+<body>
+
+
+
+
+    <div class="midd">
+        <p id="head">Rock Paper Scissors</p>
+        <div class="buttons">
+            <button onclick="move('Rock')">Rock</button>
+            <button onclick="move('Paper')">Paper</button>
+            <button onclick="move('Scissors')">Scissors</button>
+        </div>
+
+
+        <p class="status"></p>
+        <p class="combat"></p>
+
+        <p class="score_board"></p>
+        <div id="reset_but">
+
+            <a href="#"><p onclick=" 
+            move('Reset Score')">Reset Score</p></a>
+        </div>
+        
+        
+
+
+    </div>
+    
+   
+
+
+
+
+
+  <script>
+   
+    let stat = JSON.parse(localStorage.getItem('score')) || {
+        Wins: 0,
+        Loses: 0,
+        Tie: 0
+    };
+
+
+    localStorage.setItem('score', JSON.stringify(stat));
+
+    updatescore();
+
+    function updatescore() {
+        document.querySelector('.score_board').innerHTML =
+            `Wins: ${stat.Wins} Loses: ${stat.Loses} Ties: ${stat.Tie}`;
+    }
+
+    function move(User_move) {
+        const randomNumber = Math.floor(Math.random() * 3);
+        let computerMove = '';
+
+        if (randomNumber === 0) {
+            computerMove = 'Rock';
+        } else if (randomNumber === 1) {
+            computerMove = 'Paper';
+        } else {
+            computerMove = 'Scissors';
+        }
+
+        let result = '';
+
+        if (User_move === 'Reset Score') {
+            stat.Wins = 0;
+            stat.Loses = 0;
+            stat.Tie = 0;
+            result = 'Score Reset';
+            document.querySelector('.combat').innerHTML = '';
+        } else {
+            if (User_move === computerMove) {
+                result = 'It\'s a Tie';
+                stat.Tie++;
+            } else if (
+                (User_move === 'Rock' && computerMove === 'Scissors') ||
+                (User_move === 'Paper' && computerMove === 'Rock') ||
+                (User_move === 'Scissors' && computerMove === 'Paper')
+            ) {
+                result = 'You Win';
+                stat.Wins++;
+            } else {
+                result = 'You Lose';
+                stat.Loses++;
+            }
+
+            document.querySelector('.combat').innerHTML =
+                `You ${User_move} - ${computerMove} Computer`;
+        }
+
+        localStorage.setItem('score', JSON.stringify(stat));
+        updatescore();
+        document.querySelector('.status').innerHTML = result;
+    }
+</script>
+
+</body>
+</html>
